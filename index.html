@@ -360,8 +360,9 @@ const products = [
   },
   {
     category: "snacks",
-    name: "Fries (Cheese, BBQ, Sour Cream) with Sauce",
-    price: 25
+    name: "Fries",
+    price: 25,
+    flavors: ["Cheese", "BBQ", "Sour Cream"]
   },
 
   // DRINKS
@@ -432,12 +433,34 @@ function displayMenu() {
       <div class="food-info">
         <h3>${product.name}</h3>
         <p class="price">₱${product.price}.00</p>
+
+        ${product.flavors ? `
+          <label>Choose Flavor:</label>
+          <select class="flavor">
+            <option value="">Select Flavor</option>
+            ${product.flavors.map(flavor =>
+              `<option value="${flavor}">${flavor}</option>`
+            ).join("")}
+          </select>
+        ` : ""}
+
         <button class="add">Add to Cart</button>
       </div>
     `;
 
     food.querySelector("button").onclick = () => {
-      addToCart(product.name, product.price);
+
+      let flavor = product.flavors
+        ? food.querySelector(".flavor").value
+        : "";
+
+      if (product.flavors && !flavor) {
+        alert("Please select a fries flavor!");
+        return;
+      }
+
+      addToCart(product.name, product.price, flavor);
+
     };
 
     menu.appendChild(food);
@@ -458,16 +481,19 @@ function canOrder() {
 
 }
 
-function addToCart(name, price) {
+function addToCart(name, price, flavor = "") {
 
-  let item = cart.find(item => item.name === name);
+  let item = cart.find(item =>
+    item.name === name && item.flavor === flavor
+  );
 
   if (item) {
     item.quantity++;
   } else {
     cart.push({
-      name: name,
-      price: price,
+      name,
+      price,
+      flavor,
       quantity: 1
     });
   }
@@ -476,16 +502,20 @@ function addToCart(name, price) {
 
 }
 
-function changeQuantity(name, amount) {
+function changeQuantity(name, amount, flavor = "") {
 
-  let item = cart.find(item => item.name === name);
+  let item = cart.find(item =>
+    item.name === name && item.flavor === flavor
+  );
 
   if (!item) return;
 
   item.quantity += amount;
 
   if (item.quantity <= 0) {
-    cart = cart.filter(item => item.name !== name);
+    cart = cart.filter(item =>
+      !(item.name === name && item.flavor === flavor)
+    );
   }
 
   updateCart();
@@ -518,21 +548,25 @@ function updateCart() {
     let details = document.createElement("div");
 
     details.innerHTML =
-      "<b>" + item.name + "</b><br>₱" + subtotal;
+      "<b>" + item.name + "</b>" +
+      (item.flavor ? " (" + item.flavor + ")" : "") +
+      "<br>₱" + subtotal;
 
     let quantity = document.createElement("div");
     quantity.className = "quantity";
 
     let minus = document.createElement("button");
     minus.textContent = "-";
-    minus.onclick = () => changeQuantity(item.name, -1);
+    minus.onclick = () =>
+      changeQuantity(item.name, -1, item.flavor);
 
     let number = document.createElement("span");
     number.textContent = item.quantity;
 
     let plus = document.createElement("button");
     plus.textContent = "+";
-    plus.onclick = () => changeQuantity(item.name, 1);
+    plus.onclick = () =>
+      changeQuantity(item.name, 1, item.flavor);
 
     quantity.append(minus, number, plus);
     div.append(details, quantity);
@@ -586,7 +620,7 @@ async function placeOrder() {
     delivery.substring(0, 2) + ":" + delivery.substring(2, 4);
 
   let order = cart.map(item =>
-    `${item.name} x${item.quantity} = ₱${item.price * item.quantity}`
+    `${item.name}${item.flavor ? " (" + item.flavor + ")" : ""} x${item.quantity} = ₱${item.price * item.quantity}`
   ).join("\n");
 
   let total = cart.reduce((sum, item) =>
@@ -595,7 +629,7 @@ async function placeOrder() {
 
   let message = {
     content:
-      "**========================**\n" +
+      "**====================**\n" +
       "**NEW YUMMY TEH ORDER!**\n\n" +
       "**@everyone**\n\n" +
       "**Name:** " + customer + "\n" +
@@ -605,10 +639,10 @@ async function placeOrder() {
       "**ORDER:**\n" + order + "\n\n" +
       "**Total:** ₱" + total + "\n" +
       "**Notes:** " + (notes || "None") + "\n" +
-      "**========================**\n"
+      "**====================**\n"
   };
 
-  const webhook = "YOUR_DISCORD_WEBHOOK_URL";
+  const webhook = "https://discord.com/api/webhooks/1565128279617445990/Y5W71Gu-nV1qugBhhiO_rLWP22oWI8gIMEB0iDt_KRPPnEH5dQgTA_jKmbb2qTnTSkwh";
 
   try {
 
