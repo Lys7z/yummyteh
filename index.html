@@ -269,10 +269,7 @@ footer {
     </a>
   </div>
 
-  <h2 class="menu-title">🍱 Combo Meals</h2>
-  <div id="combos"></div>
-
-  <h2 class="menu-title">🍟 Rice Meals & Snacks</h2>
+  <h2 class="menu-title">🍟 Snacks</h2>
   <div id="snacks"></div>
 
   <h2 class="menu-title">🥤 Drinks</h2>
@@ -280,6 +277,9 @@ footer {
 
   <h2 class="menu-title">🍫 Desserts</h2>
   <div id="desserts"></div>
+
+  <h2 class="menu-title">🍱 Combo Meals</h2>
+  <div id="combos"></div>
 
   <div class="cart">
 
@@ -346,22 +346,8 @@ footer {
 <script>
 
 const products = [
-  {
-    category: "combos",
-    name: "Combo A - Java Rice with Chicken Poppers",
-    price: 55
-  },
-  {
-    category: "combos",
-    name: "Combo B - Chaofan Rice with Lumpia",
-    price: 50
-  },
-  {
-    category: "combos",
-    name: "Combo C - Fries with Cookies and Cream Shake",
-    price: 60
-  },
 
+  // SNACKS
   {
     category: "snacks",
     name: "Java Rice",
@@ -374,20 +360,11 @@ const products = [
   },
   {
     category: "snacks",
-    name: "Chicken Poppers",
-    price: 40
-  },
-  {
-    category: "snacks",
-    name: "Lumpia",
-    price: 5
-  },
-  {
-    category: "snacks",
     name: "Fries (Cheese, BBQ, Sour Cream) with Sauce",
     price: 25
   },
 
+  // DRINKS
   {
     category: "drinks",
     name: "Fruit Soda - Lychee (16oz)",
@@ -399,6 +376,7 @@ const products = [
     price: 45
   },
 
+  // DESSERTS
   {
     category: "desserts",
     name: "Chocolate Palitaw",
@@ -418,7 +396,25 @@ const products = [
     category: "desserts",
     name: "Graham Bar (Cookies and Cream)",
     price: 15
+  },
+
+  // COMBO MEALS
+  {
+    category: "combos",
+    name: "Combo A - Java Rice with Chicken Poppers",
+    price: 55
+  },
+  {
+    category: "combos",
+    name: "Combo B - Chaofan Rice with Lumpia",
+    price: 50
+  },
+  {
+    category: "combos",
+    name: "Combo C - Fries with Shake",
+    price: 60
   }
+
 ];
 
 let cart = [];
@@ -612,7 +608,7 @@ async function placeOrder() {
       "**====================**\n"
   };
 
-  const webhook = "https://discord.com/api/webhooks/1565128279617445990/Y5W71Gu-nV1qugBhhiO_rLWP22oWI8gIMEB0iDt_KRPPnEH5dQgTA_jKmbb2qTnTSkwh";
+  const webhook = "YOUR_DISCORD_WEBHOOK_URL";
 
   try {
 
