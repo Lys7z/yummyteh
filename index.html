@@ -40,14 +40,6 @@ header {
   gap: 10px;
 }
 
-.logo {
-  width: 48px;
-  height: 48px;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 2px solid white;
-}
-
 .name {
   font-size: 21px;
   margin: 0;
@@ -113,8 +105,13 @@ header {
   margin: 0 0 8px;
 }
 
+.food-info p {
+  margin: 5px 0;
+  color: #9b7379;
+}
+
 .price {
-  color: #df7180;
+  color: #df7180 !important;
   font-weight: bold;
   font-size: 18px;
 }
@@ -249,17 +246,13 @@ footer {
 <body>
 
 <header>
-
   <div class="brand">
-
     <h2 class="name">Yummy Teh!</h2>
-
   </div>
 
   <div class="cart-count">
     🛒 <span id="cartCount">0</span>
   </div>
-
 </header>
 
 <div class="container">
@@ -276,9 +269,17 @@ footer {
     </a>
   </div>
 
-  <h2 class="menu-title">🍟 Snacks</h2>
+  <h2 class="menu-title">🍱 Combo Meals</h2>
+  <div id="combos"></div>
 
-  <div id="menu"></div>
+  <h2 class="menu-title">🍟 Rice Meals & Snacks</h2>
+  <div id="snacks"></div>
+
+  <h2 class="menu-title">🥤 Drinks</h2>
+  <div id="drinks"></div>
+
+  <h2 class="menu-title">🍫 Desserts</h2>
+  <div id="desserts"></div>
 
   <div class="cart">
 
@@ -295,12 +296,8 @@ footer {
     <h3>Customer Information</h3>
 
     <label>Name:</label>
-    <input
-      type="text"
-      id="customer"
-      placeholder="Enter your name"
-      maxlength="30"
-    >
+    <input type="text" id="customer"
+      placeholder="Enter your name" maxlength="30">
 
     <label>Grade:</label>
     <select id="grade">
@@ -315,29 +312,18 @@ footer {
     </select>
 
     <label>Section:</label>
-    <input
-      type="text"
-      id="section"
-      placeholder="Enter your section"
-      maxlength="15"
-    >
+    <input type="text" id="section"
+      placeholder="Enter your section" maxlength="15">
 
     <label>Delivery Time:</label>
-    <input
-      type="text"
-      id="delivery"
+    <input type="text" id="delivery"
       placeholder="Example: 1030 or 1300"
-      inputmode="numeric"
-      maxlength="4"
-      oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-    >
+      inputmode="numeric" maxlength="4"
+      oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
     <label>Notes:</label>
-    <textarea
-      id="notes"
-      placeholder="Additional Notes"
-      maxlength="50"
-    ></textarea>
+    <textarea id="notes"
+      placeholder="Additional Notes" maxlength="50"></textarea>
 
     <button class="order-btn" onclick="placeOrder()">
       Place Order
@@ -360,23 +346,88 @@ footer {
 <script>
 
 const products = [
-  { name: "Chao Fan Rice", price: 20 },
-  { name: "Pork Lumpia", price: 5 },
-  { name: "Java Rice", price: 15 },
-  { name: "Chicken Poppers", price: 35 },
-  { name: "Graham Bar", price: 15 },
-  { name: "Chocolate Palitaw", price: 10 },
-  { name: "Chocnut Turon with Caramelized Sugar", price: 20 },
-  { name: "Mini Churros", price: 30 }
+  {
+    category: "combos",
+    name: "Combo A - Java Rice with Chicken Poppers",
+    price: 55
+  },
+  {
+    category: "combos",
+    name: "Combo B - Chaofan Rice with Lumpia",
+    price: 50
+  },
+  {
+    category: "combos",
+    name: "Combo C - Fries with Cookies and Cream Shake",
+    price: 60
+  },
+
+  {
+    category: "snacks",
+    name: "Java Rice",
+    price: 15
+  },
+  {
+    category: "snacks",
+    name: "Chao Fan Rice",
+    price: 20
+  },
+  {
+    category: "snacks",
+    name: "Chicken Poppers",
+    price: 40
+  },
+  {
+    category: "snacks",
+    name: "Lumpia",
+    price: 5
+  },
+  {
+    category: "snacks",
+    name: "Fries (Cheese, BBQ, Sour Cream) with Sauce",
+    price: 25
+  },
+
+  {
+    category: "drinks",
+    name: "Fruit Soda - Lychee (16oz)",
+    price: 35
+  },
+  {
+    category: "drinks",
+    name: "Cookies and Cream Shake (16oz)",
+    price: 45
+  },
+
+  {
+    category: "desserts",
+    name: "Chocolate Palitaw",
+    price: 10
+  },
+  {
+    category: "desserts",
+    name: "Chocnut Turon",
+    price: 20
+  },
+  {
+    category: "desserts",
+    name: "Mini Churros (6 pcs with Chocolate Syrup)",
+    price: 30
+  },
+  {
+    category: "desserts",
+    name: "Graham Bar (Cookies and Cream)",
+    price: 15
+  }
 ];
 
 let cart = [];
 
 function displayMenu() {
 
-  let menu = document.getElementById("menu");
-
   products.forEach(product => {
+
+    let menu = document.getElementById(product.category);
 
     let food = document.createElement("div");
     food.className = "food";
