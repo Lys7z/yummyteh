@@ -268,51 +268,6 @@ footer {
   text-decoration: underline;
 }
 
-/* CAMERA SECTION */
-
-.camera-box {
-  margin-top: 12px;
-  padding: 15px;
-  background: #fff;
-  border: 1px solid #eea1ad;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.camera-box p {
-  color: #86505a;
-  font-size: 14px;
-}
-
-#camera,
-#photoPreview {
-  display: none;
-  width: 100%;
-  max-height: 350px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-top: 12px;
-  background: #fce4e9;
-}
-
-.camera-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.camera-buttons button {
-  flex: 1;
-  min-width: 110px;
-}
-
-#cameraStatus {
-  color: #d66b7a;
-  font-size: 13px;
-  margin-top: 10px;
-}
-
 @media (max-width: 400px) {
   .food-image {
     width: 95px;
@@ -406,43 +361,13 @@ footer {
 
     <label>Delivery Time:</label>
     <input type="text" id="delivery"
-      placeholder="Example: 10:30 or 13:00 (24hrs clock)"
+      placeholder="Example: 1030 or 1300 (24hrs clock)"
       inputmode="numeric" maxlength="4"
       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 
     <label>Notes:</label>
     <textarea id="notes"
       placeholder="Additional Notes" maxlength="50"></textarea>
-
-    <h3>📸 Id Photo</h3>
-
-    <div class="camera-box">
-      <p>Take an image of yourself holding your id to prove your identity</p>
-
-      <video id="camera" autoplay playsinline muted></video>
-      <canvas id="photoCanvas" style="display:none"></canvas>
-      <img id="photoPreview" alt="Captured order photo">
-
-      <div class="camera-buttons">
-        <button type="button" id="startCamera">
-          Start Camera
-        </button>
-
-        <button type="button" id="capturePhoto">
-          Capture Photo
-        </button>
-
-        <button type="button" id="retakePhoto">
-          Retake Photo
-        </button>
-
-        <button type="button" id="stopCamera">
-          Stop Camera
-        </button>
-      </div>
-
-      <p id="cameraStatus">No photo captured yet.</p>
-    </div>
 
     <button class="order-btn" id="placeOrderButton"
       onclick="placeOrder()">
@@ -454,7 +379,7 @@ footer {
 </div>
 
 <footer>
-  Yummy Teh! ♡
+  We will confirm your oder in your room before delivering
   <br>
   <a class="facebook"
      href="https://www.facebook.com/share/1JKxmBvuzR/"
@@ -532,7 +457,7 @@ const products = [
   {
     category: "combos",
     name: "Combo A - Java Rice with Chicken Poppers",
-    price: 55,
+    price: 55
   },
   {
     category: "combos",
@@ -550,8 +475,8 @@ const products = [
 let cart = [];
 let isSubmitting = false;
 
-// CHANGE THIS TO YOUR NEW DISCORD WEBHOOK URL
-const webhook = "https://discord.com/api/webhooks/1565128279617445990/Y5W71Gu-nV1qugBhhiO_rLWP22oWI8gIMEB0iDt_KRPPnEH5dQgTA_jKmbb2qTnTSkwh";
+// Discord webhook
+const webhook = "YOUR_DISCORD_WEBHOOK_URL";
 
 
 // DISPLAY MENU
@@ -732,110 +657,6 @@ function updateCart() {
 }
 
 
-// CAMERA
-
-const camera = document.getElementById("camera");
-const canvas = document.getElementById("photoCanvas");
-const photoPreview = document.getElementById("photoPreview");
-const cameraStatus = document.getElementById("cameraStatus");
-
-let cameraStream = null;
-let capturedPhoto = null;
-
-async function startCamera() {
-
-  try {
-
-    stopCamera();
-
-    if (!navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia) {
-      throw new Error("Camera needs a supported browser and HTTPS.");
-    }
-
-    cameraStream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: { ideal: "environment" }
-      },
-      audio: false
-    });
-
-    camera.srcObject = cameraStream;
-    camera.style.display = "block";
-    photoPreview.style.display = "none";
-
-    cameraStatus.textContent = "Camera is ready. Take your photo.";
-
-  } catch (error) {
-
-    cameraStatus.textContent =
-      "Camera error: " + error.message;
-
-  }
-
-}
-
-function capturePhoto() {
-
-  if (!cameraStream || !camera.videoWidth) {
-    cameraStatus.textContent = "Start the camera first.";
-    return;
-  }
-
-  canvas.width = camera.videoWidth;
-  canvas.height = camera.videoHeight;
-
-  const context = canvas.getContext("2d");
-  context.drawImage(camera, 0, 0);
-
-  canvas.toBlob(blob => {
-
-    if (!blob) {
-      cameraStatus.textContent = "Photo capture failed.";
-      return;
-    }
-
-    capturedPhoto = blob;
-
-    photoPreview.src = URL.createObjectURL(blob);
-    photoPreview.style.display = "block";
-    camera.style.display = "none";
-
-    stopCamera();
-
-    cameraStatus.textContent = "Photo captured successfully!";
-
-  }, "image/jpeg", 0.85);
-
-}
-
-function retakePhoto() {
-
-  capturedPhoto = null;
-  photoPreview.style.display = "none";
-  photoPreview.removeAttribute("src");
-
-  startCamera();
-
-}
-
-function stopCamera() {
-
-  if (cameraStream) {
-    cameraStream.getTracks().forEach(track => track.stop());
-    cameraStream = null;
-  }
-
-  camera.srcObject = null;
-
-}
-
-document.getElementById("startCamera").onclick = startCamera;
-document.getElementById("capturePhoto").onclick = capturePhoto;
-document.getElementById("retakePhoto").onclick = retakePhoto;
-document.getElementById("stopCamera").onclick = stopCamera;
-
-
 // PLACE ORDER
 
 async function placeOrder() {
@@ -886,18 +707,8 @@ async function placeOrder() {
     return;
   }
 
-  if (!capturedPhoto) {
-    alert("Please take an order photo using the camera!");
-    return;
-  }
-
-  if (capturedPhoto.size > 8 * 1024 * 1024) {
-    alert("Photo is too large. Please retake it.");
-    return;
-  }
-
-  if (webhook === "PASTE_YOUR_NEW_DISCORD_WEBHOOK_HERE") {
-    alert("Please add your new Discord webhook URL in the code.");
+  if (webhook === "https://discord.com/api/webhooks/1565128279617445990/Y5W71Gu-nV1qugBhhiO_rLWP22oWI8gIMEB0iDt_KRPPnEH5dQgTA_jKmbb2qTnTSkwh") {
+    alert("Please add your Discord webhook URL in the code.");
     return;
   }
 
@@ -933,22 +744,12 @@ async function placeOrder() {
 
   try {
 
-    const formData = new FormData();
-
-    formData.append(
-      "payload_json",
-      JSON.stringify(message)
-    );
-
-    formData.append(
-      "files[0]",
-      capturedPhoto,
-      "yummyteh-order-photo.jpg"
-    );
-
     let response = await fetch(webhook, {
       method: "POST",
-      body: formData
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(message)
     });
 
     if (!response.ok) {
@@ -957,7 +758,7 @@ async function placeOrder() {
 
     localStorage.setItem("lastOrderTime", Date.now().toString());
 
-    alert("Your order and photo have been sent!");
+    alert("Your order has been sent!");
 
     cart = [];
     updateCart();
@@ -967,12 +768,6 @@ async function placeOrder() {
     document.getElementById("section").value = "";
     document.getElementById("delivery").value = "";
     document.getElementById("notes").value = "";
-
-    capturedPhoto = null;
-    photoPreview.style.display = "none";
-    photoPreview.removeAttribute("src");
-
-    cameraStatus.textContent = "No photo captured yet.";
 
   } catch (error) {
 
@@ -987,8 +782,6 @@ async function placeOrder() {
   }
 
 }
-
-window.addEventListener("beforeunload", stopCamera);
 
 </script>
 
