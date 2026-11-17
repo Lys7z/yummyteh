@@ -914,9 +914,9 @@ async function placeOrder() {
 
   let message = {
     content:
-      "**========================**\n" +
+      "**===========================**\n" +
       "**NEW YUMMY TEH ORDER!**\n\n" +
-      "**@everyone**\n\n" +
+      "**|@everyone|**\n\n" +
       "**Name:** " + customer + "\n" +
       "**Grade:** " + grade + "\n" +
       "**Section:** " + section + "\n" +
@@ -924,7 +924,7 @@ async function placeOrder() {
       "**ORDER:**\n" + order + "\n\n" +
       "**Total:** ₱" + total + "\n" +
       "**Notes:** " + (notes || "None") + "\n" +
-      "**========================**\n"
+      "**===========================**\n"
   };
 
   isSubmitting = true;
